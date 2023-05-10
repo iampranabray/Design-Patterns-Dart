@@ -1,0 +1,10 @@
+name: adapter
+version: 6.3.0
+
+description: A lightweight library for parsing, traversing, querying, transforming and building XML and json documents.
+homepage: https://github.com/renggli/dart-xml
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+dependencies:
+  xml: ^6.3.0
