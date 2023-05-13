@@ -1,7 +1,7 @@
 import 'package:xml/xml.dart';
 
-import 'UpiData_model.dart';
 import 'adapter_data.dart';
+import 'upi_data_model.dart';
 
 main() {
   InterfaceAdapter adapter = Adapter();
