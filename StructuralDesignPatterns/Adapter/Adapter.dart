@@ -1,19 +1,37 @@
-import 'dart:convert';
-
 import 'package:xml/xml.dart';
 
 import 'UpiData_model.dart';
 import 'adapter_data.dart';
 
 main() {
-  JsonData jsonData = JsonData();
-  XmlData xmlData = XmlData();
-  print(jsonData.json);
-  print(xmlData.xml);
-
   InterfaceAdapter adapter = Adapter();
-  adapter.getJsonUpiData(jsonData.json);
-  adapter.getXmlUpiData(xmlData.xml);
+  UpiData jsonAdapterData = adapter.getJsonUpiData(JsonData().json);
+  UpiData jsonXmlData = adapter.getXmlUpiData(XmlData().xml);
+
+  //json id data
+  jsonAdapterData.id?.forEach((element) {
+    print('####### json id data');
+    print('auth id: ${element.id}');
+    print('bank name: ${element.type}\n');
+  });
+  //json upi data
+  jsonAdapterData.upi?.forEach((element) {
+    print('####### json upi data');
+    print("upi id: ${element.id}");
+    print("bank name: ${element.bank}\n");
+  });
+  //xml id data
+  jsonXmlData.id?.forEach((element) {
+    print('####### xml id data');
+    print('auth id: ${element.id}');
+    print('bank name: ${element.type}\n');
+  });
+  //xml upi data
+  jsonXmlData.upi?.forEach((element) {
+    print('####### xml upi data');
+    print('upi id: ${element.id}');
+    print('bank name: ${element.bank}\n');
+  });
 }
 
 abstract class InterfaceAdapter {
@@ -29,14 +47,23 @@ class Adapter extends InterfaceAdapter {
 
   @override
   UpiData getXmlUpiData(String data) {
-    // var jsonData = jsonDecode(data);
-    //print(jsonData.runtimeType);
-    // return UpiData(upi: ,id: );
-
     final xmlDocument = XmlDocument.parse(data);
-    final upiDataList = <UpiData>[];
+    final upiIdList = <Upi>[];
+    final idIDList = <Id>[];
 
-    return upiDataList;
+    for (final UPI in xmlDocument.findAllElements('UPI')) {
+      final id = UPI.findElements('id').single.innerText;
+      final bank = UPI.findElements('bank').single.innerText;
+
+      upiIdList.add(Upi(id: id, bank: bank));
+    }
+    for (final ID in xmlDocument.findAllElements('ID')) {
+      final id = ID.findElements('id').single.innerText;
+      final type = ID.findElements('type').single.innerText;
+      idIDList.add(Id(id: id, type: type));
+    }
+
+    return UpiData(id: idIDList, upi: upiIdList);
   }
 }
 
